@@ -833,16 +833,17 @@ class QuadrupedEnv(gym.Env):
         contact_state = LegsAttr(FL=False, FR=False, RL=False, RR=False)
         feet_contacts = LegsAttr(FL=[], FR=[], RL=[], RR=[])
         feet_contact_forces = LegsAttr(FL=[], FR=[], RL=[], RR=[])
+        foot_geom_ids = self._feet_geom_id.to_list()
         for contact_id, contact in enumerate(self.mjData.contact):
             # Get body IDs from geom IDs
             body1_id = self.mjModel.geom_bodyid[contact.geom1]
             body2_id = self.mjModel.geom_bodyid[contact.geom2]
 
             if 0 in [body1_id, body2_id]:  # World body ID is 0
-                second_id = body2_id if body1_id == 0 else body1_id
-                if second_id in self._feet_body_id.to_list():  # Check if contact occurs with the feet
+                second_geom_id = contact.geom2 if body1_id == 0 else contact.geom1
+                if second_geom_id in foot_geom_ids:  # Check if contact occurs with the foot geom.
                     for leg_name in ['FL', 'FR', 'RL', 'RR']:
-                        if second_id == self._feet_body_id[leg_name]:
+                        if second_geom_id == self._feet_geom_id[leg_name]:
                             contact_state[leg_name] = True
                             feet_contacts[leg_name].append(contact)
                             if ground_reaction_forces:  # Store the contact forces
