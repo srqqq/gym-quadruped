@@ -5,8 +5,8 @@
 
   <default>
     <default class="go2">
-      <geom friction="0.6" margin="0.001" condim="1"/>
-      <joint axis="0 1 0" damping="2.0" armature="0.01" frictionloss="0.2"/>
+      <geom friction="0.4" margin="0.001" condim="1"/>
+      <joint axis="0 1 0" damping="0.1" armature="0.01" frictionloss="0.2"/>
       <motor ctrlrange="-23.7 23.7"/>
       <default class="abduction">
         <joint axis="1 0 0" range="-1.0472 1.0472"/>
@@ -29,8 +29,8 @@
       <default class="collision">
         <geom group="3"/>
         <default class="foot">
-          <geom size="0.022" pos="-0.002 0 -0.213" priority="1" solimp="0.015 1 0.022" condim="6"
-            friction="0.8 0.02 0.01"/>
+          <geom size="0.022" pos="-0.002 0 -0.213" priority="1" condim="6"
+            friction="0.4 0.02 0.01"/>
         </default>
       </default>
     </default>
@@ -101,6 +101,7 @@
               class="collision"/>
             <geom pos="0 0 -0.213" mesh="foot" class="visual" material="black"/>
             <geom name="FL" class="foot"/>
+            <body name="FL_foot" pos="-0.002 0 -0.213"/>
           </body>
         </body>
       </body>
@@ -131,6 +132,7 @@
               class="collision"/>
             <geom pos="0 0 -0.213" mesh="foot" class="visual" material="black"/>
             <geom name="FR" class="foot"/>
+            <body name="FR_foot" pos="-0.002 0 -0.213"/>
           </body>
         </body>
       </body>
@@ -161,6 +163,7 @@
               class="collision"/>
             <geom pos="0 0 -0.213" mesh="foot" class="visual" material="black"/>
             <geom name="RL" class="foot"/>
+            <body name="RL_foot" pos="-0.002 0 -0.213"/>
           </body>
         </body>
       </body>
@@ -191,6 +194,7 @@
               class="collision"/>
             <geom pos="0 0 -0.213" mesh="foot" class="visual" material="black"/>
             <geom name="RR" class="foot"/>
+            <body name="RR_foot" pos="-0.002 0 -0.213"/>
           </body>
         </body>
       </body>

@@ -825,7 +825,7 @@ class QuadrupedEnv(gym.Env):
                     - RL: (3,) The total ground reaction force acting on the RL foot in the specified frame.
                     - RR: (3,) The total ground reaction force acting on the RR foot in the specified frame.
         """
-        if any(x is None for x in self._feet_body_id.to_list()):
+        if any(x is None for x in self._feet_geom_id.to_list()):
             raise ValueError(
                 'Please provide the `feet_geom_name` argument in the Env constructor to compute contact forces.'
             )
