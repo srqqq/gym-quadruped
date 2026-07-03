@@ -937,9 +937,9 @@ class QuadrupedEnv(gym.Env):
         # mujoco.mj_energyVel(self.mjModel, self.mjData)
         # kinetic_energy = self.mjData.energy[1]
 
-        M = np.zeros((self.mjModel.nv, self.mjModel.nv))
+        mass_matrix = np.zeros((self.mjModel.nv, self.mjModel.nv))
         mujoco.mj_fullM(self.mjModel, self.mjData, mass_matrix)
-        kinetic_energy = 1 / 2 * self.mjData.qvel.T @ M @ self.mjData.qvel
+        kinetic_energy = 1 / 2 * self.mjData.qvel.T @ mass_matrix @ self.mjData.qvel
 
         return kinetic_energy
 
@@ -950,11 +950,11 @@ class QuadrupedEnv(gym.Env):
         M(q) ddq = Tau(q, dq, F) = tau_ctrl - c(q, dq) - G(q) + J^T(q) F
         """
         # Allocate memory for the mass matrix
-        Mq = np.zeros((self.mjModel.nv, self.mjModel.nv))
+        mass_matrix = np.zeros((self.mjModel.nv, self.mjModel.nv))
         # Convert the sparse mass matrix to a dense one
         mujoco.mj_fullM(self.mjModel, self.mjData, mass_matrix)
 
-        gen_forces = Mq @ self.mjData.qacc  # U(q, dq, F) = M(q) ddq
+        gen_forces = mass_matrix @ self.mjData.qacc  # U(q, dq, F) = M(q) ddq
         work = np.dot(gen_forces, self.mjData.qvel)
 
         return work
