@@ -60,6 +60,8 @@ FEET_OBS = [
     'feet_vel_rel',
     'feet_vel:base',
     'feet_vel_rel:base',
+    'feet_acc',
+    'feet_acc:base',
     'contact_state',
     'contact_forces',
     'contact_forces:base',
@@ -678,6 +680,26 @@ class QuadrupedEnv(gym.Env):
 
         return LegsAttr(**feet_vel)
 
+    def feet_acc(self, frame: str = 'world') -> LegsAttr:
+        """Return each foot's linear acceleration in world or base coordinates."""
+        if frame not in ('world', 'base'):
+            raise ValueError(f"Invalid frame: {frame} != 'world' or 'base'")
+
+        feet_jac = self.feet_jacobians(frame='world')
+        feet_jac_dot = self.feet_jacobians_dot(frame='world')
+        feet_acc = {
+            leg_name: feet_jac[leg_name] @ self.mjData.qacc
+            + feet_jac_dot[leg_name] @ self.mjData.qvel
+            for leg_name in self.legs_order
+        }
+        if frame == 'base':
+            R_B_w = self.base_configuration[0:3, 0:3]
+            feet_acc = {
+                leg_name: R_B_w.T @ acceleration
+                for leg_name, acceleration in feet_acc.items()
+            }
+        return LegsAttr(**feet_acc)
+
     def feet_jacobians(self, frame: str = 'world', return_rot_jac: bool = False) -> LegsAttr | tuple[LegsAttr, ...]:
         """Compute the Jacobians of the feet positions.
 
@@ -1191,6 +1213,8 @@ class QuadrupedEnv(gym.Env):
                 obs_val = np.concatenate(
                     self.feet_vel(frame, relative=False).to_list(order=self.legs_order), axis=0
                 ).copy()
+            elif 'feet_acc' in obs_name:
+                obs_val = np.concatenate(self.feet_acc(frame).to_list(order=self.legs_order), axis=0).copy()
             elif obs_name == 'contact_state':
                 contact_state, _ = self.feet_contact_state()
                 obs_val = np.array(contact_state.to_list(), dtype=np.float32).copy()

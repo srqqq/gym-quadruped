@@ -289,7 +289,7 @@ def configure_observation_space(mj_model: mujoco.MjModel, obs_names: Sequence[st
             obs_dim = 9
             obs_lim_max = [np.inf] * obs_dim
             obs_lim_min = [-np.inf] * obs_dim
-        elif 'feet_pos' in obs_name or 'feet_vel' in obs_name:
+        elif 'feet_pos' in obs_name or 'feet_vel' in obs_name or 'feet_acc' in obs_name:
             obs_dim = 12
             obs_lim_max = [np.inf] * obs_dim
             obs_lim_min = [-np.inf] * obs_dim
@@ -407,7 +407,7 @@ def configure_observation_space_representations(
             continue  # Quaternion does not have a left-group action definition.
         elif obs_name == 'base_ori_SO3':
             obs_reps[obs_name] = rep_SO3_flat
-        elif 'feet_pos' in obs_name or 'feet_vel' in obs_name:  # feet_pos:frame := feet_pos:world or feet_pos:base
+        elif 'feet_pos' in obs_name or 'feet_vel' in obs_name or 'feet_acc' in obs_name:
             obs_reps[obs_name] = rep_Rd_on_limbs
         elif obs_name == 'contact_state':
             obs_reps[obs_name] = rep_kin_three
