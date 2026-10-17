@@ -1,7 +1,9 @@
 <mujoco model="go2">
   <compiler angle="radian" autolimits="true"/>
 
-  <option cone="elliptic" impratio="100"/>
+  <option cone="elliptic" impratio="100">
+    <flag nativeccd="disable"/>
+  </option>
 
   <default>
     <default class="go2">
