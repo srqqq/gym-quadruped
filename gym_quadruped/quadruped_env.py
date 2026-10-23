@@ -160,6 +160,11 @@ class QuadrupedEnv(gym.Env):
         # Define the robot model to load to the scene ________________________________________________________
         try:  # to load the robot's model on custom terrain scene.
             root = scene_env.getroot()
+            # Generated scenes move to assets; preserve source-relative textures.
+            if base_scene_env_path.exists():
+                for texture in root.findall('asset/texture'):
+                    if texture.get('file'):
+                        texture.set('file', str((base_scene_env_path.parent / texture.get('file')).resolve()))
             # Add include of the robot model
             robot_xml_path = base_path / self.robot_cfg.mjcf_filename
             assert robot_xml_path.exists(), f'Robot model file not found: {robot_xml_path.absolute()}'
@@ -425,8 +430,11 @@ class QuadrupedEnv(gym.Env):
                 show_right_ui=False,
                 key_callback=lambda x: self._key_callback(x),
             )
+            reflective_ground = mujoco.mj_name2id(
+                self.mjModel, mujoco.mjtObj.mjOBJ_GEOM, 'friction_map_visual'
+            ) >= 0
             self.viewer.user_scn.flags[mujoco.mjtRndFlag.mjRND_SHADOW] = False
-            self.viewer.user_scn.flags[mujoco.mjtRndFlag.mjRND_REFLECTION] = False
+            self.viewer.user_scn.flags[mujoco.mjtRndFlag.mjRND_REFLECTION] = reflective_ground
             if tint_robot:
                 change_robot_appearance(self.mjModel, alpha=1.0)
 
