@@ -1351,7 +1351,7 @@ class QuadrupedEnv(gym.Env):
 
             self._ghost_mjData.qpos = q
             self._ghost_mjData.qvel *= 0.0
-            mujoco.mj_forward(self.mjModel, self._ghost_mjData)
+            mujoco.mj_kinematics(self.mjModel, self._ghost_mjData)
             self._ghost_robots_geom[ghost_robot_idx] |= render_ghost_robot(
                 self.viewer,
                 self.mjModel,
